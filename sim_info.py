@@ -36,36 +36,60 @@ class SPageFilePhysics(ctypes.Structure):
     ('abs', c_float),
   ]
 
-print(ctypes.sizeof(SPageFilePhysics))
-mm = mmap.mmap(-1,tagname='acpmf_physics', length=ctypes.sizeof(SPageFilePhysics))
 
+AC_STATUS = c_int32
+AC_SESSION_TYPE = c_int32
+
+class SPageFileGraphic(ctypes.Structure):
+    _pack_ = 4
+    _fields_ = [
+        ('packetId', c_int32),
+        ('status', AC_STATUS),
+        ('session', AC_SESSION_TYPE),
+        ('currentTime', c_wchar * 15),
+        ('lastTime', c_wchar * 15),
+        ('bestTime', c_wchar * 15),
+        ('split', c_wchar * 15),
+        ('completedLaps', c_int32),
+        ('position', c_int32),
+        ('iCurrentTime', c_int32),
+        ('iLastTime', c_int32),
+        ('iBestTime', c_int32),
+        ('sessionTimeLeft', c_float),
+        ('distanceTraveled', c_float),
+        ('isInPit', c_int32),
+        ('currentSectorIndex', c_int32),
+        ('lastSectorTime', c_int32),
+        ('numberOfLaps', c_int32),
+        ('tyreCompound', c_wchar * 33),
+        ('replayTimeMultiplier', c_float),
+        ('normalizedCarPosition', c_float),
+        ('carCoordinates', c_float * 3),
+    ]
+
+
+
+mm = mmap.mmap(-1,tagname='acpmf_physics', length=ctypes.sizeof(SPageFilePhysics))
+mm2 = mmap.mmap(-1, tagname='acpmf_graphics', length=ctypes.sizeof(SPageFileGraphic))
+
+rawDataBefore = mm2.read(ctypes.sizeof(SPageFileGraphic))
+dataBefore = SPageFileGraphic.from_buffer_copy(rawDataBefore)
+
+previous_completed_laps = dataBefore.completedLaps 
 while True:
   mm.seek(0)
+  mm2.seek(0)
   rawData = mm.read(ctypes.sizeof(SPageFilePhysics))
   data = SPageFilePhysics.from_buffer_copy(rawData)
-  print(
-    f"packetId={data.packetId} "
-    f"gas={data.gas:.2f} brake={data.brake:.2f} fuel={data.fuel:.2f} "
-    f"gear={data.gear} rpm={data.rpm} steerAngle={data.steerAngle:.2f} "
-    f"speedKmh={data.speedKmh:.2f} "
-    f"velocity=({data.velocity[0]:.2f},{data.velocity[1]:.2f},{data.velocity[2]:.2f}) "
-    f"accG=({data.accG[0]:.2f},{data.accG[1]:.2f},{data.accG[2]:.2f}) "
-    f"wheelSlip=({data.wheelSlip[0]:.2f},{data.wheelSlip[1]:.2f},{data.wheelSlip[2]:.2f},{data.wheelSlip[3]:.2f}) "
-    f"wheelLoad=({data.wheelLoad[0]:.1f},{data.wheelLoad[1]:.1f},{data.wheelLoad[2]:.1f},{data.wheelLoad[3]:.1f}) "
-    f"wheelsPressure=({data.wheelsPressure[0]:.2f},{data.wheelsPressure[1]:.2f},{data.wheelsPressure[2]:.2f},{data.wheelsPressure[3]:.2f}) "
-    f"wheelAngularSpeed=({data.wheelAngularSpeed[0]:.2f},{data.wheelAngularSpeed[1]:.2f},{data.wheelAngularSpeed[2]:.2f},{data.wheelAngularSpeed[3]:.2f}) "
-    f"tyreWear=({data.tyreWear[0]:.2f},{data.tyreWear[1]:.2f},{data.tyreWear[2]:.2f},{data.tyreWear[3]:.2f}) "
-    f"tyreDirtyLevel=({data.tyreDirtyLevel[0]:.2f},{data.tyreDirtyLevel[1]:.2f},{data.tyreDirtyLevel[2]:.2f},{data.tyreDirtyLevel[3]:.2f}) "
-    f"tyreCoreTemperature=({data.tyreCoreTemperature[0]:.1f},{data.tyreCoreTemperature[1]:.1f},{data.tyreCoreTemperature[2]:.1f},{data.tyreCoreTemperature[3]:.1f}) "
-    f"camberRAD=({data.camberRAD[0]:.3f},{data.camberRAD[1]:.3f},{data.camberRAD[2]:.3f},{data.camberRAD[3]:.3f}) "
-    f"suspensionTravel=({data.suspensionTravel[0]:.3f},{data.suspensionTravel[1]:.3f},{data.suspensionTravel[2]:.3f},{data.suspensionTravel[3]:.3f}) "
-    f"drs={data.drs:.2f} tc={data.tc:.2f} "
-    f"heading={data.heading:.2f} pitch={data.pitch:.2f} roll={data.roll:.2f} "
-    f"cgHeight={data.cgHeight:.3f} "
-    f"carDamage=({data.carDamage[0]:.2f},{data.carDamage[1]:.2f},{data.carDamage[2]:.2f},{data.carDamage[3]:.2f},{data.carDamage[4]:.2f}) "
-    f"tyresOut={data.numberOfTyresOut} pitLimiter={data.pitLimiterOn} abs={data.abs:.2f}"
-)
-  time.sleep(0.2)
+
+  
+  rawData2 = mm2.read(ctypes.sizeof(SPageFileGraphic))
+  data2 = SPageFileGraphic.from_buffer_copy(rawData2)
+
+  if(previous_completed_laps != data2.completedLaps):
+     previous_completed_laps = data2.completedLaps
+  
+  time.sleep(0.05) # Rate 20 Hz 
 
   
 

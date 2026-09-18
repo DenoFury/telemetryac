@@ -1,0 +1,43 @@
+just to print and test the sim_info.py 
+PHYSICS
+print(
+    f"packetId={data.packetId} "
+    f"gas={data.gas:.2f} brake={data.brake:.2f} fuel={data.fuel:.2f} "
+    f"gear={data.gear} rpm={data.rpm} steerAngle={data.steerAngle:.2f} "
+    f"speedKmh={data.speedKmh:.2f} "
+    f"velocity=({data.velocity[0]:.2f},{data.velocity[1]:.2f},{data.velocity[2]:.2f}) "
+    f"accG=({data.accG[0]:.2f},{data.accG[1]:.2f},{data.accG[2]:.2f}) "
+    f"wheelSlip=({data.wheelSlip[0]:.2f},{data.wheelSlip[1]:.2f},{data.wheelSlip[2]:.2f},{data.wheelSlip[3]:.2f}) "
+    f"wheelLoad=({data.wheelLoad[0]:.1f},{data.wheelLoad[1]:.1f},{data.wheelLoad[2]:.1f},{data.wheelLoad[3]:.1f}) "
+    f"wheelsPressure=({data.wheelsPressure[0]:.2f},{data.wheelsPressure[1]:.2f},{data.wheelsPressure[2]:.2f},{data.wheelsPressure[3]:.2f}) "
+    f"wheelAngularSpeed=({data.wheelAngularSpeed[0]:.2f},{data.wheelAngularSpeed[1]:.2f},{data.wheelAngularSpeed[2]:.2f},{data.wheelAngularSpeed[3]:.2f}) "
+    f"tyreWear=({data.tyreWear[0]:.2f},{data.tyreWear[1]:.2f},{data.tyreWear[2]:.2f},{data.tyreWear[3]:.2f}) "
+    f"tyreDirtyLevel=({data.tyreDirtyLevel[0]:.2f},{data.tyreDirtyLevel[1]:.2f},{data.tyreDirtyLevel[2]:.2f},{data.tyreDirtyLevel[3]:.2f}) "
+    f"tyreCoreTemperature=({data.tyreCoreTemperature[0]:.1f},{data.tyreCoreTemperature[1]:.1f},{data.tyreCoreTemperature[2]:.1f},{data.tyreCoreTemperature[3]:.1f}) "
+    f"camberRAD=({data.camberRAD[0]:.3f},{data.camberRAD[1]:.3f},{data.camberRAD[2]:.3f},{data.camberRAD[3]:.3f}) "
+    f"suspensionTravel=({data.suspensionTravel[0]:.3f},{data.suspensionTravel[1]:.3f},{data.suspensionTravel[2]:.3f},{data.suspensionTravel[3]:.3f}) "
+    f"drs={data.drs:.2f} tc={data.tc:.2f} "
+    f"heading={data.heading:.2f} pitch={data.pitch:.2f} roll={data.roll:.2f} "
+    f"cgHeight={data.cgHeight:.3f} "
+    f"carDamage=({data.carDamage[0]:.2f},{data.carDamage[1]:.2f},{data.carDamage[2]:.2f},{data.carDamage[3]:.2f},{data.carDamage[4]:.2f}) "
+    f"tyresOut={data.numberOfTyresOut} pitLimiter={data.pitLimiterOn} abs={data.abs:.2f}"
+)
+
+GRAPHICS
+print(
+    f"packetId={data2.packetId} "
+    f"status={data2.status} session={data2.session} "
+    f"currentTime='{data2.currentTime}' lastTime='{data2.lastTime}' "
+    f"bestTime='{data2.bestTime}' split='{data2.split}' "
+    f"completedLaps={data2.completedLaps} position={data2.position} "
+    f"iCurrentTime={data2.iCurrentTime} iLastTime={data2.iLastTime} iBestTime={data2.iBestTime} "
+    f"sessionTimeLeft={data2.sessionTimeLeft:.1f} "
+    f"distanceTraveled={data2.distanceTraveled:.1f} "
+    f"isInPit={data2.isInPit} "
+    f"currentSectorIndex={data2.currentSectorIndex} lastSectorTime={data2.lastSectorTime} "
+    f"numberOfLaps={data2.numberOfLaps} "
+    f"tyreCompound='{data2.tyreCompound}' "
+    f"replayTimeMultiplier={data2.replayTimeMultiplier:.2f} "
+    f"normalizedCarPosition={data2.normalizedCarPosition:.4f} "
+    f"carCoordinates=({data2.carCoordinates[0]:.1f},{data2.carCoordinates[1]:.1f},{data2.carCoordinates[2]:.1f})"
+)
