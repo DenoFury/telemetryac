@@ -18,6 +18,22 @@ interpolated_speed3 = np.interp(fixedGrid, dflap3['position'], dflap3['speed_kmh
 
 
 delta = interpolated_speed2 - interpolated_speed3
+
+
+trackLength = 4326 # Redbull ring track distance in meters.
+meters_per_step = trackLength / 999
+speed2_ms = (interpolated_speed2 * 1000) / 3600
+speed3_ms = (interpolated_speed3 * 1000) / 3600
+time2 = meters_per_step/speed2_ms # Assume speed is not 0
+time3 = meters_per_step/speed3_ms
+cumulative_time2 = np.cumsum(time2)
+cumulative_time3 = np.cumsum(time3)
+
+
+print(cumulative_time3[-1])
+print(cumulative_time3[2])
+
+"""
 plt.figure(figsize=(12,5))
 plt.plot(fixedGrid, delta,color='tab:blue', linewidth=1)
 plt.axhline(0, color='black', linewidth=0.8)  # zero-reference line
@@ -30,5 +46,5 @@ plt.legend()
 plt.tight_layout()
 plt.savefig('speed_delta.png')
 plt.show()
-
+"""
 # plt.plot(interpolated_speed2['x'], interpolated_speed2['y'])
