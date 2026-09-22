@@ -1,6 +1,7 @@
 import mmap
 import ctypes
 import time
+import csv
 from ctypes import c_int32, c_float, c_wchar
 class SPageFilePhysics(ctypes.Structure):
   _pack_ = 4
@@ -75,10 +76,22 @@ mm2 = mmap.mmap(-1, tagname='acpmf_graphics', length=ctypes.sizeof(SPageFileGrap
 rawDataBefore = mm2.read(ctypes.sizeof(SPageFileGraphic))
 dataBefore = SPageFileGraphic.from_buffer_copy(rawDataBefore)
 
-previous_completed_laps = dataBefore.completedLaps 
+with open('samples.csv', 'w', newline='') as samplecsv:
+  writer = csv.writer(samplecsv)
+  writer.writerow(['timestamp', 'lap', 'position', 'gas', 'brake', 'speed_kmh', 'rpm', 'gear', 'steer_angle'])
+with open('laps.csv', 'w', newline='') as lapcsv:
+  writer = csv.writer(lapcsv)
+  writer.writerow(['lap', 'lap_time_ms', 'timestamp'])
+
+
+prev_position = dataBefore.normalizedCarPosition
+previous_laps = dataBefore.completedLaps  
+current_lap = dataBefore.completedLaps + 1
 while True:
   mm.seek(0)
   mm2.seek(0)
+
+  
   rawData = mm.read(ctypes.sizeof(SPageFilePhysics))
   data = SPageFilePhysics.from_buffer_copy(rawData)
 
@@ -86,9 +99,24 @@ while True:
   rawData2 = mm2.read(ctypes.sizeof(SPageFileGraphic))
   data2 = SPageFileGraphic.from_buffer_copy(rawData2)
 
-  if(previous_completed_laps != data2.completedLaps):
-     previous_completed_laps = data2.completedLaps
-  
+  if(prev_position - data2.normalizedCarPosition > 0.5):
+    current_lap = current_lap + 1
+
+ 
+
+  with open('samples.csv', 'a', newline='') as samplecsv:
+    writer = csv.writer(samplecsv)
+    writer.writerow([time.time(), current_lap, data2.normalizedCarPosition,
+          data.gas, data.brake, data.speedKmh, data.rpm,
+          data.gear, data.steerAngle])
+
+  if previous_laps != current_lap:
+    with open('laps.csv', 'a', newline='') as lapcsv:
+      writer = csv.writer(lapcsv)
+      writer.writerow([current_lap, data2.iLastTime, time.time()])
+    previous_laps = current_lap
+
+  prev_position = data2.normalizedCarPosition
   time.sleep(0.05) # Rate 20 Hz 
 
   
