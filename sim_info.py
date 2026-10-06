@@ -113,7 +113,7 @@ while True:
   if previous_laps != current_lap:
     with open('laps.csv', 'a', newline='') as lapcsv:
       writer = csv.writer(lapcsv)
-      writer.writerow([current_lap, data2.iLastTime, data2.distanceTraveled,time.time()])
+      writer.writerow([previous_laps, data2.iLastTime, data2.distanceTraveled,time.time()])
     previous_laps = current_lap
 
   prev_position = data2.normalizedCarPosition
